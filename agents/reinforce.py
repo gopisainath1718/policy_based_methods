@@ -41,8 +41,8 @@ class Reinforce():
 
     def get_action(self, state):
         state = torch.from_numpy(state).float().unsqueeze(0).to(self.device)
-        probs = self.actor(state)
-        m = Categorical(probs)
+        logits = self.actor(state)
+        m = Categorical(logits=logits)
         action = m.sample()
         
         if not self.is_test:
@@ -165,11 +165,3 @@ class Reinforce():
         plt.tight_layout()
         plt.pause(0.001)  # Brief pause to allow the plot to render
         
-if __name__ == '__main__':
-
-    env_id = "CartPole-v1"
-    env = gym.make(env_id, render_mode="rgb_array")
-
-    agent = Reinforce(env, n_training_episodes=10, max_steps=1000, hidden_size=16, gamma=1.0, lr=1e-2)
-    agent.train()
-    #agent.test("reinforce")
